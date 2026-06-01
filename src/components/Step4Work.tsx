@@ -9,9 +9,10 @@ interface Props {
   onSubmit: () => void
   onBack: () => void
   loading: boolean
+  error?: string
 }
 
-export default function Step4Work({ data, onChange, onSubmit, onBack, loading }: Props) {
+export default function Step4Work({ data, onChange, onSubmit, onBack, loading, error }: Props) {
   return (
     <div className={styles.step}>
       <div className={styles.stepHeader}>
@@ -62,6 +63,12 @@ export default function Step4Work({ data, onChange, onSubmit, onBack, loading }:
           onChange={e => onChange('dream', e.target.value)}
         />
       </div>
+
+      {error && (
+        <div style={{ background: '#ff4d4f22', border: '1px solid #ff4d4f', borderRadius: 8, padding: '12px 16px', color: '#ff4d4f', marginBottom: 12, fontSize: 14 }}>
+          ⚠️ {error}
+        </div>
+      )}
 
       <div className={styles.btnRow}>
         <button className={styles.btn} onClick={onBack} disabled={loading}>← Հետ</button>

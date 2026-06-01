@@ -88,8 +88,9 @@ export default function Home() {
       const text = data.content
         .map((b: { type: string; text?: string }) => (b.type === 'text' ? b.text : ''))
         .join('')
-      const clean = text.replace(/```json|```/g, '').trim()
-      const parsed: AnalysisResult = JSON.parse(clean)
+      const match = text.match(/\{[\s\S]*\}/)
+      if (!match) throw new Error('AI-ը սխալ ձևաչափ վերադարձրեց։ Կրկին փորձեք։')
+      const parsed: AnalysisResult = JSON.parse(match[0])
       setResult(parsed)
       setStep(4)
     } catch (e) {
@@ -164,6 +165,7 @@ export default function Home() {
               onSubmit={analyze}
               onBack={() => setStep(2)}
               loading={loading}
+              error={error}
             />
           )}
 
@@ -172,7 +174,6 @@ export default function Home() {
           )}
         </div>
 
-        {error && <p className={styles.error}>{error}</p>}
 
         <p className={styles.footer}>
           Կառուցված է Claude AI-ի միջոցով • Հայաստան 🇦🇲

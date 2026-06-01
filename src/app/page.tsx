@@ -71,13 +71,18 @@ export default function Home() {
 Նշեք ճիշտ 3 մասնագիտություն, match արժեքները 60-98 range-ում, ամենաբարձրը առաջին։ Եղեք շատ կոնկրետ Հայաստանի կոնտեքստում։`
 
     try {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 25000)
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [{ role: 'user', content: prompt }],
         }),
+        signal: controller.signal,
       })
+      clearTimeout(timeout)
 
       const data = await res.json()
 
@@ -95,7 +100,10 @@ export default function Home() {
       setStep(4)
     } catch (e) {
       console.error(e)
-      setError(e instanceof Error ? e.message : 'Սխալ տեղի ունեցավ։ Խնդրում ենք կրկին փորձել։')
+      const msg = e instanceof Error && e.name === 'AbortError'
+        ? 'Հարցումը չափից շատ տևեց։ Կրկին փորձեք։'
+        : e instanceof Error ? e.message : 'Սխալ տեղի ունեցավ։ Կրկին փորձեք։'
+      setError(msg)
     } finally {
       setLoading(false)
     }

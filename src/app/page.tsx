@@ -78,7 +78,10 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }],
+          messages: [
+            { role: 'user', content: prompt },
+            { role: 'assistant', content: '{' },
+          ],
         }),
         signal: controller.signal,
       })
@@ -93,9 +96,7 @@ export default function Home() {
       const text = data.content
         .map((b: { type: string; text?: string }) => (b.type === 'text' ? b.text : ''))
         .join('')
-      const match = text.match(/\{[\s\S]*\}/)
-      if (!match) throw new Error('AI-ը սխալ ձևաչափ վերադարձրեց։ Կրկին փորձեք։')
-      const parsed: AnalysisResult = JSON.parse(match[0])
+      const parsed: AnalysisResult = JSON.parse('{' + text)
       setResult(parsed)
       setStep(4)
     } catch (e) {

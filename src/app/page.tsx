@@ -93,10 +93,12 @@ export default function Home() {
         throw new Error(data.error || 'API error')
       }
 
-      const text = data.content
+      const raw = '{' + data.content
         .map((b: { type: string; text?: string }) => (b.type === 'text' ? b.text : ''))
         .join('')
-      const parsed: AnalysisResult = JSON.parse('{' + text)
+      const match = raw.match(/\{[\s\S]*\}/)
+      if (!match) throw new Error('AI-ը սխալ ձևաչափ վերադարձրեց։ Կրկին փորձեք։')
+      const parsed: AnalysisResult = JSON.parse(match[0])
       setResult(parsed)
       setStep(4)
     } catch (e) {

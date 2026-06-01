@@ -26,38 +26,6 @@ const INITIAL_FORM: FormData = {
   dream: '',
 }
 
-const FALLBACK: AnalysisResult = {
-  intro: 'Ձեր տվյալների հիման վրա ահա մեր AI-ի առաջարկությունները։',
-  careers: [
-    {
-      name: 'Ծրագրավորող',
-      match: 88,
-      description: 'Ձեր տեխնիկական հետաքրքրությունները և վերլուծական մտածողությունը կատարյալ են ծրագրավորման ոլորտի համար։ Տեխնոլոգիաների արագ զարգացման հետ մեկտեղ սա ապագայի ամենապահանջված մասնագիտություններից է։',
-      skills: ['Python / JavaScript', 'Problem Solving', 'Տրամաբանություն'],
-      salary: '400,000 – 800,000 ՀՀ դրամ/ամիս',
-      path: 'Բուհ (ՀՊՀ / TUMO) կամ ինքնուրույն ուսուցում',
-      color: 'accent',
-    },
-    {
-      name: 'Վեբ Դիզայներ / UI-UX',
-      match: 76,
-      description: 'Ստեղծագործական կողմն ու տեխնոլոգիան համատեղ կիրառելու հնարավորություն։ Figma, Adobe XD, CSS — ահա ձեր ապագա գործիքները։',
-      skills: ['Figma', 'CSS / HTML', 'UX Research'],
-      salary: '300,000 – 600,000 ՀՀ դրամ/ամիս',
-      path: 'Կուրսեր (TUMO, Coursera) + Portfolio',
-      color: 'green',
-    },
-    {
-      name: 'Տվյալների Վերլուծաբան',
-      match: 65,
-      description: 'Մաթեմատիկայի, վիճակագրության և ծրագրավորման հատման կետ։ Վերլուծական մտածողությամբ մարդկանց համար ապագայի ամենաարժեքավոր մասնագիտություններից է։',
-      skills: ['Python / R', 'SQL', 'Power BI / Tableau'],
-      salary: '350,000 – 700,000 ՀՀ դրամ/ամիս',
-      path: 'Բուհ կամ Online դասընթացներ (Coursera, DataCamp)',
-      color: 'amber',
-    },
-  ],
-}
 
 export default function Home() {
   const [step, setStep] = useState(0)
@@ -126,13 +94,7 @@ export default function Home() {
       setStep(4)
     } catch (e) {
       console.error(e)
-      // Use fallback with personalized intro
-      const fallback = {
-        ...FALLBACK,
-        intro: `${form.name}, ձեր տվյալների հիման վրա ահա մեր խորհուրդները։ (API key-ը կարգաբերեք .env.local ֆայլում ամբողջական AI վերլուծության համար)`,
-      }
-      setResult(fallback)
-      setStep(4)
+      setError(e instanceof Error ? e.message : 'Սխալ տեղի ունեցավ։ Խնդրում ենք կրկին փորձել։')
     } finally {
       setLoading(false)
     }

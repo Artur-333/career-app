@@ -1,0 +1,247 @@
+.step {
+  animation: fadeIn 0.35s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.75rem;
+}
+
+.stepIcon {
+  font-size: 32px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.stepSub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.fieldGroup {
+  margin-bottom: 1.25rem;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.required {
+  color: var(--coral);
+}
+
+.optional {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.chipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text-sub);
+  font-size: 13px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.chip:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.chipSelected {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--accent2);
+  font-weight: 500;
+}
+
+.chipEmoji {
+  font-size: 15px;
+}
+
+.selectedCount {
+  font-size: 12px;
+  color: var(--accent2);
+  margin-top: 10px;
+}
+
+/* Slider styles */
+.sliderList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 0.5rem;
+}
+
+.sliderRow {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+
+.sliderRow:hover {
+  border-color: var(--border-hover);
+}
+
+.sliderMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sliderEmoji {
+  font-size: 18px;
+}
+
+.sliderLabel {
+  font-size: 13px;
+  color: var(--text-sub);
+  flex: 1;
+}
+
+.sliderLevel {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent2);
+}
+
+.sliderLevel[data-level="1"] { background: var(--coral-soft); color: var(--coral); }
+.sliderLevel[data-level="2"] { background: var(--amber-soft); color: var(--amber); }
+.sliderLevel[data-level="3"] { background: var(--bg3); color: var(--text-muted); }
+.sliderLevel[data-level="4"] { background: var(--green-soft); color: var(--green); }
+.sliderLevel[data-level="5"] { background: var(--accent-soft); color: var(--accent2); }
+
+.sliderTrack {
+  position: relative;
+}
+
+.sliderDots {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 9px;
+  margin-top: 4px;
+}
+
+.sliderDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.sliderDotFilled {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Buttons */
+.btnRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.75rem;
+}
+
+.btn {
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text-sub);
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #6a59e8;
+  border-color: #6a59e8;
+  color: white;
+}
+
+.btnAnalyze {
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,221 @@
+'use client'
+
+import { useState } from 'react'
+import { FormData, AnalysisResult, SKILL_LABELS } from '@/lib/types'
+import ProgressBar from '@/components/ProgressBar'
+import Step1Personal from '@/components/Step1Personal'
+import Step2Interests from '@/components/Step2Interests'
+import Step3Skills from '@/components/Step3Skills'
+import Step4Work from '@/components/Step4Work'
+import Results from '@/components/Results'
+import Loading from '@/components/Loading'
+import styles from './page.module.css'
+
+const INITIAL_SKILLS = Object.fromEntries(
+  Object.keys(SKILL_LABELS).map(k => [k, 3])
+)
+
+const INITIAL_FORM: FormData = {
+  name: '',
+  age: '',
+  edu: '',
+  interests: [],
+  skills: INITIAL_SKILLS,
+  env: '',
+  team: '',
+  dream: '',
+}
+
+const FALLBACK: AnalysisResult = {
+  intro: 'Ձեր տվյալների հիման վրա ահա մեր AI-ի առաջարկությունները։',
+  careers: [
+    {
+      name: 'Ծրագրավորող',
+      match: 88,
+      description: 'Ձեր տեխնիկական հետաքրքրությունները և վերլուծական մտածողությունը կատարյալ են ծրագրավորման ոլորտի համար։ Տեխնոլոգիաների արագ զարգացման հետ մեկտեղ սա ապագայի ամենապահանջված մասնագիտություններից է։',
+      skills: ['Python / JavaScript', 'Problem Solving', 'Տրամաբանություն'],
+      salary: '400,000 – 800,000 ՀՀ դրամ/ամիս',
+      path: 'Բուհ (ՀՊՀ / TUMO) կամ ինքնուրույն ուսուցում',
+      color: 'accent',
+    },
+    {
+      name: 'Վեբ Դիզայներ / UI-UX',
+      match: 76,
+      description: 'Ստեղծագործական կողմն ու տեխնոլոգիան համատեղ կիրառելու հնարավորություն։ Figma, Adobe XD, CSS — ահա ձեր ապագա գործիքները։',
+      skills: ['Figma', 'CSS / HTML', 'UX Research'],
+      salary: '300,000 – 600,000 ՀՀ դրամ/ամիս',
+      path: 'Կուրսեր (TUMO, Coursera) + Portfolio',
+      color: 'green',
+    },
+    {
+      name: 'Տվյալների Վերլուծաբան',
+      match: 65,
+      description: 'Մաթեմատիկայի, վիճակագրության և ծրագրավորման հատման կետ։ Վերլուծական մտածողությամբ մարդկանց համար ապագայի ամենաարժեքավոր մասնագիտություններից է։',
+      skills: ['Python / R', 'SQL', 'Power BI / Tableau'],
+      salary: '350,000 – 700,000 ՀՀ դրամ/ամիս',
+      path: 'Բուհ կամ Online դասընթացներ (Coursera, DataCamp)',
+      color: 'amber',
+    },
+  ],
+}
+
+export default function Home() {
+  const [step, setStep] = useState(0)
+  const [form, setForm] = useState<FormData>(INITIAL_FORM)
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [error, setError] = useState('')
+
+  const updateField = (field: keyof FormData, val: string | string[] | Record<string, number>) => {
+    setForm(prev => ({ ...prev, [field]: val }))
+  }
+
+  const analyze = async () => {
+    setLoading(true)
+    setError('')
+
+    const prompt = `Դուք մասնագիտական կողմնորոշման AI խորհրդատու եք։ Հայ լեզվով վերադարձրեք ՄԻԱՅՆ JSON, առանց markdown backticks-ի կամ բացատրությունների։
+
+Օգտատիրոջ տվյալները.
+- Անուն: ${form.name}
+- Տարիք: ${form.age || 'չնշված'}
+- Կրթություն: ${form.edu || 'չնշված'}
+- Հետաքրքրություններ: ${form.interests.join(', ') || 'չնշված'}
+- Աշխատանքային միջավայր: ${form.env || 'չնշված'}
+- Թիմային նախապատվություն: ${form.team || 'չնշված'}
+- Հմտություններ (1-5): Վերլուծական=${form.skills.analytical}, Ստեղծագործ=${form.skills.creative}, Հաղորդակցություն=${form.skills.communication}, Կազմակերպչական=${form.skills.organizational}, Տեխնիկական=${form.skills.technical}, Ղեկավարություն=${form.skills.leadership}, Մաթեմատիկա=${form.skills.math}
+- Երազանք: ${form.dream || 'չնշված'}
+
+Վերադարձրեք JSON հետևյալ ձևաչափով.
+{
+  "intro": "Անհատականացված 1-2 նախադասություն ${form.name}-ին ուղղված, բացատրեք ինչ է երևում ձեր տվյալներից",
+  "careers": [
+    {
+      "name": "Մասնագիտության անունը հայերեն",
+      "match": 95,
+      "description": "2-3 նախադասություն թե ինչու է հարմար հենց այս անձի համար, կոնկրետ ու անհատականացված",
+      "skills": ["հմտություն1", "հմտություն2", "հմտություն3"],
+      "salary": "Հայաստանի աշխատաշուկայի տվյալներ",
+      "path": "Կոնկրետ ուղի — ինչ բուհ, կուրս կամ ինչպես սկսել"
+    }
+  ]
+}
+Նշեք ճիշտ 3 մասնագիտություն, match արժեքները 60-98 range-ում, ամենաբարձրը առաջին։ Եղեք շատ կոնկրետ Հայաստանի կոնտեքստում։`
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'API error')
+      }
+
+      const text = data.content
+        .map((b: { type: string; text?: string }) => (b.type === 'text' ? b.text : ''))
+        .join('')
+      const clean = text.replace(/```json|```/g, '').trim()
+      const parsed: AnalysisResult = JSON.parse(clean)
+      setResult(parsed)
+      setStep(4)
+    } catch (e) {
+      console.error(e)
+      // Use fallback with personalized intro
+      const fallback = {
+        ...FALLBACK,
+        intro: `${form.name}, ձեր տվյալների հիման վրա ահա մեր խորհուրդները։ (API key-ը կարգաբերեք .env.local ֆայլում ամբողջական AI վերլուծության համար)`,
+      }
+      setResult(fallback)
+      setStep(4)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const restart = () => {
+    setForm(INITIAL_FORM)
+    setResult(null)
+    setError('')
+    setStep(0)
+  }
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.container}>
+        {/* Header */}
+        <div className={styles.header}>
+          <div className={styles.logo}>
+            <span className={styles.logoIcon}>🧭</span>
+            <span className={styles.logoText}>CareerAI.am</span>
+          </div>
+          <h1 className={styles.title}>Մասնագիտական Կողմնորոշում</h1>
+          <p className={styles.subtitle}>
+            Լրացրեք ձեր տվյալները — AI-ը կգտնի ձեզ ամենահամապատասխան մասնագիտությունը
+          </p>
+        </div>
+
+        {/* Progress (hide on loading/results) */}
+        {!loading && step < 4 && (
+          <ProgressBar total={4} current={step} />
+        )}
+
+        {/* Steps */}
+        <div className={styles.card}>
+          {loading && <Loading />}
+
+          {!loading && step === 0 && (
+            <Step1Personal
+              data={form}
+              onChange={(f, v) => updateField(f, v as string)}
+              onNext={() => setStep(1)}
+            />
+          )}
+
+          {!loading && step === 1 && (
+            <Step2Interests
+              data={form}
+              onChange={(f, v) => updateField(f, v)}
+              onNext={() => setStep(2)}
+              onBack={() => setStep(0)}
+            />
+          )}
+
+          {!loading && step === 2 && (
+            <Step3Skills
+              data={form}
+              onChange={(skills) => updateField('skills', skills)}
+              onNext={() => setStep(3)}
+              onBack={() => setStep(1)}
+            />
+          )}
+
+          {!loading && step === 3 && (
+            <Step4Work
+              data={form}
+              onChange={(f, v) => updateField(f, v as string)}
+              onSubmit={analyze}
+              onBack={() => setStep(2)}
+              loading={loading}
+            />
+          )}
+
+          {!loading && step === 4 && result && (
+            <Results result={result} name={form.name} onRestart={restart} />
+          )}
+        </div>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <p className={styles.footer}>
+          Կառուցված է Claude AI-ի միջոցով • Հայաստան 🇦🇲
+        </p>
+      </div>
+    </main>
+  )
+}
